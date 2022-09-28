@@ -1,4 +1,4 @@
-Feature: register user and search product functionality
+Feature: HomePage functionalities
   Scenario: user registers and search for a product
     Given user is on the home page of the website
     When user user navigates to the register page
