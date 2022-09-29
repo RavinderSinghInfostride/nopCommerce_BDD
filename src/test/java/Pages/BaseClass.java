@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class BaseClass {
-    protected PageFactory pageFactory;
+    protected static PageFactory pageFactory;
     WebDriver driver;
 
     By logoutLink = By.xpath("//a[contains(text(),'Log out')]");

@@ -28,6 +28,25 @@ public class HomePage {
     By searchInputBox = By.xpath("//input[contains(@class,'search-box-text')]");
     By searchButton = By.xpath("//button[contains(@class,'search-box-button')]");
     By productSearchedIsDisplayedVerify = By.xpath("//h2//a[contains(text(),'Apple MacBook Pro 13-inch')]");
+    String navMenuOptions = "((//div[@class='header-menu']//ul[contains(@class,'top-menu')]//a[contains(text(),'%s')]))[1]";
+    String computersSubCategoryOptions = "//div[@class='item-grid']//h2[@class='title']//a[contains(text(),' Desktops ')]";
+    String allDesktopProducts = "//div[@class='item-grid']//div[@class='details']//h2//a[contains(text(),'%s')]";
+    By addToWishlistButton = By.xpath("//div[@class='add-to-wishlist']//button[contains(@class,'add-to-wishlist-button')]");
+    By addToWishlistSuccessNotification = By.xpath("//div[contains(@class,'success')]");
+    By wishlistPageLink = By.xpath("//a[@class='ico-wishlist']");
+    By productAddedToWishlistVerify = By.xpath("//a[contains(text(),'Digital Storm VANQUISH 3 Custom Performance PC')]");
+    By addToCartButton = By.xpath("(//button[contains(@class,'add-to-cart-button')])[1]");
+    By cartLink = By.xpath("//a[@class='ico-cart']");
+    By productAddedToCartVerify = By.xpath("(//a[contains(text(),'Digital Storm VANQUISH 3 Custom Performance PC')])[2]");
+    By termsAndConditionCheckbox = By.xpath("//input[@name='termsofservice']");
+    By checkoutButton = By.xpath("//button[@name='checkout']");
+    By countryDropdown = By.xpath("//select[@name='BillingNewAddress.CountryId']");
+    By countryDropdownOption = By.xpath("//option[@value='133'][contains(text(),'India')]");
+    By cityInputBox = By.xpath("//input[@name='BillingNewAddress.City']");
+    By address1InputBox = By.xpath("//input[@name='BillingNewAddress.Address1']");
+    By zidCodeInputBox = By.xpath("//input[@name='BillingNewAddress.ZipPostalCode']");
+    By phoneNumberInputBox = By.xpath("//input[@name='BillingNewAddress.PhoneNumber']");
+    By checkoutDetailsContinueButton = By.xpath("(//button[contains(@class,'new-address-next-step-button')])[1]");
 
     int randomNumber = (int) (Math.random() * (99 - 11 + 1) + 11);
 
@@ -98,5 +117,82 @@ public class HomePage {
         wait.until(ExpectedConditions.visibilityOfElementLocated(productSearchedIsDisplayedVerify));
         String isProductSearchedDisplayed = driver.findElement(productSearchedIsDisplayedVerify).getText();
         Assert.assertEquals(productSearchVerify, isProductSearchedDisplayed);
+    }
+
+    public void navigateToDesktopPage() throws IOException {
+        String path = System.getProperty("user.dir") + "//src//test//java//TestData//TestData.xlsx";
+        FileInputStream testData = null;
+        try {
+            testData = new FileInputStream(path);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        XSSFWorkbook wb = new XSSFWorkbook(testData);
+        XSSFSheet sheet = wb.getSheet("Sheet1");
+        String navMenuOptionToHover = sheet.getRow(8).getCell(0).getStringCellValue();
+        String computersSubCategoryOption = sheet.getRow(8).getCell(1).getStringCellValue();
+        driver.findElement(By.xpath(String.format(navMenuOptions, navMenuOptionToHover))).click();
+        driver.findElement(By.xpath(String.format(computersSubCategoryOptions, computersSubCategoryOption))).click();
+    }
+
+    public void addDesktopToWishlist() throws IOException {
+        String path = System.getProperty("user.dir") + "//src//test//java//TestData//TestData.xlsx";
+        FileInputStream testData = null;
+        try {
+            testData = new FileInputStream(path);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        XSSFWorkbook wb = new XSSFWorkbook(testData);
+        XSSFSheet sheet = wb.getSheet("Sheet1");
+        String desktopProductToAddToWishlist = sheet.getRow(8).getCell(2).getStringCellValue();
+        driver.findElement(By.xpath(String.format(allDesktopProducts, desktopProductToAddToWishlist))).click();
+        driver.findElement(addToWishlistButton).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(addToWishlistSuccessNotification));
+        driver.findElement(wishlistPageLink).click();
+        String isProductAddedToWishlistCorrect = driver.findElement(productAddedToWishlistVerify).getText();
+        Assert.assertEquals(isProductAddedToWishlistCorrect, desktopProductToAddToWishlist);
+    }
+
+    public void addProductToCart() throws IOException {
+        String path = System.getProperty("user.dir") + "//src//test//java//TestData//TestData.xlsx";
+        FileInputStream testData = null;
+        try {
+            testData = new FileInputStream(path);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        XSSFWorkbook wb = new XSSFWorkbook(testData);
+        XSSFSheet sheet = wb.getSheet("Sheet1");
+        String desktopProductToAddToCart = sheet.getRow(8).getCell(2).getStringCellValue();
+        driver.findElement(By.xpath(String.format(allDesktopProducts, desktopProductToAddToCart))).click();
+        driver.findElement(addToCartButton).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(addToWishlistSuccessNotification));
+        driver.findElement(cartLink).click();
+        String isProductAddedToCartCorrect = driver.findElement(productAddedToCartVerify).getText();
+        Assert.assertEquals(desktopProductToAddToCart,isProductAddedToCartCorrect);
+    }
+
+    public void checkoutFromCart() throws IOException {
+        String path = System.getProperty("user.dir") + "//src//test//java//TestData//TestData.xlsx";
+        FileInputStream testData = null;
+        try {
+            testData = new FileInputStream(path);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        XSSFWorkbook wb = new XSSFWorkbook(testData);
+        XSSFSheet sheet = wb.getSheet("Sheet1");
+        String city = sheet.getRow(11).getCell(0).getStringCellValue();
+        String address1 = sheet.getRow(11).getCell(1).getStringCellValue();
+        driver.findElement(termsAndConditionCheckbox).click();
+        driver.findElement(checkoutButton).click();
+        driver.findElement(countryDropdown).click();
+        driver.findElement(countryDropdownOption).click();
+        driver.findElement(cityInputBox).sendKeys(city);
+        driver.findElement(address1InputBox).sendKeys(address1);
+        driver.findElement(zidCodeInputBox).sendKeys("123456");
+        driver.findElement(phoneNumberInputBox).sendKeys("9999999999");
+        driver.findElement(checkoutDetailsContinueButton).click();
     }
 }
